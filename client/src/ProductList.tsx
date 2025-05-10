@@ -18,18 +18,19 @@ const ProductList: React.FC<ProductListProps> = ({ role }) => {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState({ name: '', description: '', price: '', stock: '' });
 
+  const fetchProducts = async () => {
+    const jwt = localStorage.getItem('jwt');
+    const res = await fetch('http://localhost:8080/api/products', {
+      headers: { 'Authorization': `Bearer ${jwt}` }
+    });
+    if (res.ok) {
+      setProducts(await res.json());
+    } else {
+      setMessage('Failed to fetch products.');
+    }
+  };
+
   useEffect(() => {
-    const fetchProducts = async () => {
-      const jwt = localStorage.getItem('jwt');
-      const res = await fetch('http://localhost:8080/api/products', {
-        headers: { 'Authorization': `Bearer ${jwt}` }
-      });
-      if (res.ok) {
-        setProducts(await res.json());
-      } else {
-        setMessage('Failed to fetch products.');
-      }
-    };
     fetchProducts();
   }, []);
 
@@ -56,7 +57,7 @@ const ProductList: React.FC<ProductListProps> = ({ role }) => {
     if (res.ok) {
       setMessage('Product created!');
       setForm({ name: '', description: '', price: '', stock: '' });
-      setProducts(await res.json());
+      fetchProducts();
     } else {
       setMessage('Failed to create product.');
     }
@@ -70,7 +71,7 @@ const ProductList: React.FC<ProductListProps> = ({ role }) => {
     });
     if (res.ok) {
       setMessage('Product deleted!');
-      setProducts(products.filter(p => p.id !== id));
+      fetchProducts();
     } else {
       setMessage('Failed to delete product.');
     }
@@ -107,7 +108,7 @@ const ProductList: React.FC<ProductListProps> = ({ role }) => {
       setMessage('Product updated!');
       setEditingId(null);
       setForm({ name: '', description: '', price: '', stock: '' });
-      setProducts(await res.json());
+      fetchProducts();
     } else {
       setMessage('Failed to update product.');
     }
