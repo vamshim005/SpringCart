@@ -27,6 +27,9 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Username already exists");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (user.getRole() == null || user.getRole().isEmpty()) {
+            user.setRole("USER");
+        }
         userRepository.save(user);
         return ResponseEntity.ok("User registered successfully");
     }
@@ -35,7 +38,7 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginData) {
         Optional<User> userOpt = userRepository.findByUsername(loginData.get("username"));
         if (userOpt.isPresent() && passwordEncoder.matches(loginData.get("password"), userOpt.get().getPassword())) {
-            String token = jwtService.generateToken(userOpt.get().getUsername());
+            String token = jwtService.generateToken(userOpt.get().getUsername(), userOpt.get().getRole());
             Map<String, String> response = new HashMap<>();
             response.put("token", token);
             return ResponseEntity.ok(response);

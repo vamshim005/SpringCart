@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -38,6 +39,9 @@ public class SecurityConfig {
             .authorizeRequests()
             .antMatchers("/api/auth/**").permitAll()
             .antMatchers(org.springframework.http.HttpMethod.GET, "/api/products/**").permitAll()
+            .antMatchers(org.springframework.http.HttpMethod.POST, "/api/products/**").hasAuthority("ADMIN")
+            .antMatchers(org.springframework.http.HttpMethod.PUT, "/api/products/**").hasAuthority("ADMIN")
+            .antMatchers(org.springframework.http.HttpMethod.DELETE, "/api/products/**").hasAuthority("ADMIN")
             .anyRequest().authenticated()
             .and()
             .addFilterBefore(new JwtAuthFilter(jwtService, userRepository), UsernamePasswordAuthenticationFilter.class);
@@ -56,9 +60,11 @@ public class SecurityConfig {
             String authHeader = request.getHeader("Authorization");
             String token = null;
             String username = null;
+            String role = null;
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 token = authHeader.substring(7);
                 username = jwtService.extractUsername(token);
+                role = jwtService.extractRole(token);
             }
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 Optional<com.ecommerce.model.User> userOpt = userRepository.findByUsername(username);
@@ -66,7 +72,7 @@ public class SecurityConfig {
                     UserDetails userDetails = org.springframework.security.core.userdetails.User
                         .withUsername(username)
                         .password(userOpt.get().getPassword())
-                        .authorities("USER")
+                        .authorities(role != null ? role : "USER")
                         .build();
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());

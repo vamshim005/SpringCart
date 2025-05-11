@@ -36,9 +36,15 @@ public class JwtService {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(String username) {
+    public String generateToken(String username, String role) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("role", role);
         return createToken(claims, username);
+    }
+
+    public String extractRole(String token) {
+        final Claims claims = extractAllClaims(token);
+        return claims.get("role", String.class);
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
@@ -54,5 +60,10 @@ public class JwtService {
     public Boolean validateToken(String token, String username) {
         final String extractedUsername = extractUsername(token);
         return (extractedUsername.equals(username) && !isTokenExpired(token));
+    }
+
+    // Keep the old generateToken(String username) for backward compatibility
+    public String generateToken(String username) {
+        return generateToken(username, "USER");
     }
 } 

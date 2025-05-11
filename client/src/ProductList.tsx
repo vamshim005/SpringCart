@@ -10,9 +10,10 @@ interface Product {
 
 interface ProductListProps {
   role: string | null;
+  addToCart?: (product: { id: number; name: string; price: number }) => void;
 }
 
-const ProductList: React.FC<ProductListProps> = ({ role }) => {
+const ProductList: React.FC<ProductListProps> = ({ role, addToCart }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [message, setMessage] = useState('');
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -122,6 +123,11 @@ const ProductList: React.FC<ProductListProps> = ({ role }) => {
         {products.map(p => (
           <li key={p.id}>
             <b>{p.name}</b>: {p.description} (${p.price}) [Stock: {p.stock}]
+            {addToCart && (
+              <button style={{ marginLeft: 8 }} onClick={() => addToCart({ id: p.id, name: p.name, price: p.price })}>
+                Add to Cart
+              </button>
+            )}
             {role === 'ADMIN' && (
               <span>
                 <button onClick={() => handleEdit(p)}>Edit</button>
