@@ -57,4 +57,68 @@ ecommerceApp/
 2. Configure environment variables
 3. Run the application using Docker Compose
 
-More detailed setup instructions will be added as we build the application. 
+More detailed setup instructions will be added as we build the application.
+
+## Setup Instructions
+
+### 1. Environment Variables
+
+Before running the app, you must set the following environment variables (in a `.env` file or your shell):
+
+- `STRIPE_SECRET_KEY` - Your Stripe secret key
+- `STRIPE_WEBHOOK_SECRET` - Your Stripe webhook secret
+- `GOOGLE_CLIENT_ID` - Your Google OAuth client ID
+- `GOOGLE_CLIENT_SECRET` - Your Google OAuth client secret
+- `JWT_SECRET_KEY` - (Optional) Your JWT signing secret (default is `mysecretkey123456`)
+
+**Do NOT commit your secrets to the repository.**
+
+Example `.env` file:
+```
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+JWT_SECRET_KEY=your_jwt_secret
+```
+
+### 2. Running with Docker Compose
+
+1. Copy `.env.example` to `.env` and fill in your secrets (or create `.env` as above).
+2. Start the app:
+   ```bash
+   docker-compose up --build
+   ```
+3. The backend will be available at `http://localhost:8080` and the frontend at `http://localhost:3000`.
+
+### 3. Local Development
+
+- **Backend:**
+  - Set environment variables in your shell or IDE.
+  - Run with Maven:
+    ```bash
+    cd server
+    mvn spring-boot:run
+    ```
+- **Frontend:**
+  - Start React app:
+    ```bash
+    cd client
+    npm install
+    npm start
+    ```
+
+### 4. Security
+- Never commit secrets to the repository.
+- If you accidentally commit a secret, remove it from your git history using BFG Repo-Cleaner or similar tools.
+
+### 5. Features
+- Google OAuth2 login
+- Username/password login
+- Stripe payments
+- Product management
+- MySQL, Redis, Docker Compose
+
+---
+
+For more details, see the code and comments in each service. 
