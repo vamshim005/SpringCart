@@ -24,5 +24,19 @@ public class Product {
     @Column(nullable = false)
     private Integer stock;
 
+    @Column(nullable = true)
+    private String imageUrl;
+
     // Additional fields can be added as needed
+
+    public Product() {}
+
+    public Product(Long id, String name, String description, BigDecimal price, Integer stock, String imageUrl) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.stock = stock;
+        this.imageUrl = imageUrl;
+    }
 } 

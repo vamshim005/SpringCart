@@ -24,13 +24,23 @@ const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Login</h2>
-      <input placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} required />
-      <input placeholder="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} required />
-      <button type="submit">Login</button>
-      <div>{message}</div>
-    </form>
+    <>
+      <form onSubmit={handleSubmit}>
+        <h2>Login</h2>
+        <input placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} required />
+        <input placeholder="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} required />
+        <button type="submit">Login</button>
+        <div>{message}</div>
+      </form>
+      <button
+        type="button"
+        style={{ marginTop: 16, background: '#fff', border: '1px solid #ccc', padding: '8px 16px', borderRadius: 4, cursor: 'pointer' }}
+        onClick={() => window.location.href = 'http://localhost:8080/oauth2/authorization/google'}
+      >
+        <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo" style={{ width: 18, marginRight: 8, verticalAlign: 'middle' }} />
+        Sign in with Google
+      </button>
+    </>
   );
 };
 

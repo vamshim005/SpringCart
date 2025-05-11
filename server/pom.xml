@@ -69,6 +69,11 @@
             <artifactId>stripe-java</artifactId>
             <version>22.0.0</version>
         </dependency>
+        <!-- Google OAuth -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

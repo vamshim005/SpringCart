@@ -6,6 +6,7 @@ interface Product {
   description: string;
   price: number;
   stock: number;
+  imageUrl?: string;
 }
 
 interface ProductListProps {
@@ -17,7 +18,7 @@ const ProductList: React.FC<ProductListProps> = ({ role, addToCart }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [message, setMessage] = useState('');
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [form, setForm] = useState({ name: '', description: '', price: '', stock: '' });
+  const [form, setForm] = useState({ name: '', description: '', price: '', stock: '', imageUrl: '' });
 
   const fetchProducts = async () => {
     const jwt = localStorage.getItem('jwt');
@@ -52,12 +53,13 @@ const ProductList: React.FC<ProductListProps> = ({ role, addToCart }) => {
         name: form.name,
         description: form.description,
         price: parseFloat(form.price),
-        stock: parseInt(form.stock)
+        stock: parseInt(form.stock),
+        imageUrl: form.imageUrl
       })
     });
     if (res.ok) {
       setMessage('Product created!');
-      setForm({ name: '', description: '', price: '', stock: '' });
+      setForm({ name: '', description: '', price: '', stock: '', imageUrl: '' });
       fetchProducts();
     } else {
       setMessage('Failed to create product.');
@@ -84,7 +86,8 @@ const ProductList: React.FC<ProductListProps> = ({ role, addToCart }) => {
       name: product.name,
       description: product.description,
       price: product.price.toString(),
-      stock: product.stock.toString()
+      stock: product.stock.toString(),
+      imageUrl: product.imageUrl || ''
     });
   };
 
@@ -102,13 +105,14 @@ const ProductList: React.FC<ProductListProps> = ({ role, addToCart }) => {
         name: form.name,
         description: form.description,
         price: parseFloat(form.price),
-        stock: parseInt(form.stock)
+        stock: parseInt(form.stock),
+        imageUrl: form.imageUrl
       })
     });
     if (res.ok) {
       setMessage('Product updated!');
       setEditingId(null);
-      setForm({ name: '', description: '', price: '', stock: '' });
+      setForm({ name: '', description: '', price: '', stock: '', imageUrl: '' });
       fetchProducts();
     } else {
       setMessage('Failed to update product.');
@@ -119,12 +123,19 @@ const ProductList: React.FC<ProductListProps> = ({ role, addToCart }) => {
     <div>
       <h2>Product List</h2>
       {message && <div>{message}</div>}
-      <ul>
+      <div className="product-grid">
         {products.map(p => (
-          <li key={p.id}>
-            <b>{p.name}</b>: {p.description} (${p.price}) [Stock: {p.stock}]
+          <div className="product-card" key={p.id}>
+            <img
+              src={p.imageUrl || "https://via.placeholder.com/200x150?text=Product"}
+              alt={p.name}
+              className="product-image"
+            />
+            <h3>{p.name}</h3>
+            <p>${p.price.toFixed(2)}</p>
+            <span className="stock-badge">{p.stock > 0 ? 'In Stock' : 'Out of Stock'}</span>
             {addToCart && (
-              <button style={{ marginLeft: 8 }} onClick={() => addToCart({ id: p.id, name: p.name, price: p.price })}>
+              <button style={{ marginTop: 8 }} onClick={() => addToCart({ id: p.id, name: p.name, price: p.price })}>
                 Add to Cart
               </button>
             )}
@@ -134,9 +145,9 @@ const ProductList: React.FC<ProductListProps> = ({ role, addToCart }) => {
                 <button onClick={() => handleDelete(p.id)}>Delete</button>
               </span>
             )}
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
       {role === 'ADMIN' && (
         <div>
           <h3>{editingId ? 'Edit Product' : 'Add Product'}</h3>
@@ -145,8 +156,9 @@ const ProductList: React.FC<ProductListProps> = ({ role, addToCart }) => {
             <input name="description" placeholder="Description" value={form.description} onChange={handleChange} required />
             <input name="price" placeholder="Price" type="number" value={form.price} onChange={handleChange} required />
             <input name="stock" placeholder="Stock" type="number" value={form.stock} onChange={handleChange} required />
+            <input name="imageUrl" placeholder="Image URL" value={form.imageUrl} onChange={handleChange} />
             <button type="submit">{editingId ? 'Update' : 'Create'}</button>
-            {editingId && <button type="button" onClick={() => { setEditingId(null); setForm({ name: '', description: '', price: '', stock: '' }); }}>Cancel</button>}
+            {editingId && <button type="button" onClick={() => { setEditingId(null); setForm({ name: '', description: '', price: '', stock: '', imageUrl: '' }); }}>Cancel</button>}
           </form>
         </div>
       )}

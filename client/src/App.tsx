@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Register from './Register';
 import Login from './Login';
 import ProductList from './ProductList';
@@ -29,14 +29,33 @@ const App: React.FC = () => {
 
   const isLoggedIn = !!localStorage.getItem('jwt');
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const jwt = params.get('jwt');
+    if (jwt) {
+      localStorage.setItem('jwt', jwt);
+      // Optionally, redirect to products or clear the query param
+      window.location.href = '/products';
+    }
+  }, []);
+
+  useEffect(() => {
+    // If JWT is present and user is not set, call handleLogin
+    if (localStorage.getItem('jwt') && !username) {
+      handleLogin();
+    }
+    // eslint-disable-next-line
+  }, []);
+
   const handleLogin = () => {
     setPage('products');
     const jwt = localStorage.getItem('jwt');
     if (jwt) {
       try {
         const decoded = jwtDecode<JwtPayload>(jwt);
+        console.log('Decoded JWT:', decoded);
         setRole(decoded.role || null);
-        setUsername(decoded.sub || null);
+        setUsername(decoded.username || decoded.sub || null);
       } catch {
         setRole(null);
         setUsername(null);
@@ -128,7 +147,7 @@ const Profile: React.FC<{ username: string | null }> = ({ username }) => {
     }
     const jwt = localStorage.getItem('jwt');
     console.log('Fetching profile for username:', username);
-    fetch(`http://localhost:8080/api/users/${username}`, {
+    fetch(`http://localhost:8080/api/users/${encodeURIComponent(username)}`, {
       headers: { 'Authorization': `Bearer ${jwt}` }
     })
       .then(res => res.ok ? res.json() : Promise.reject(res.statusText))

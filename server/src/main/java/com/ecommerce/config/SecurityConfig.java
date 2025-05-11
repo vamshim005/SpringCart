@@ -29,6 +29,8 @@ public class SecurityConfig {
     private JwtService jwtService;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -38,11 +40,16 @@ public class SecurityConfig {
             .and()
             .authorizeRequests()
             .antMatchers("/api/auth/**").permitAll()
+            .antMatchers("/oauth2/**").permitAll()
+            .antMatchers("/img/**", "/css/**", "/js/**", "/static/**").permitAll()
             .antMatchers(org.springframework.http.HttpMethod.GET, "/api/products/**").permitAll()
             .antMatchers(org.springframework.http.HttpMethod.POST, "/api/products/**").hasAuthority("ADMIN")
             .antMatchers(org.springframework.http.HttpMethod.PUT, "/api/products/**").hasAuthority("ADMIN")
             .antMatchers(org.springframework.http.HttpMethod.DELETE, "/api/products/**").hasAuthority("ADMIN")
             .anyRequest().authenticated()
+            .and()
+            .oauth2Login()
+            .successHandler(customOAuth2SuccessHandler)
             .and()
             .addFilterBefore(new JwtAuthFilter(jwtService, userRepository), UsernamePasswordAuthenticationFilter.class);
         return http.build();
