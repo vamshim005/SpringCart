@@ -16,11 +16,11 @@ services:
       - DB_HOST=mysql
       - DB_USER=root
       - DB_PASS=root_password
-      - STRIPE_SECRET_KEY=***REMOVED***51RNRK22UPUsh6WXCmaWOSfckwxWpGNErfigvHxY0kObq0dYmBiUyCyjeQiLmfnK0Jo35GZSTvKynUAPEagXGeCnL00Wajs412m
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
       - STRIPE_PUBLISHABLE_KEY=pk_test_51RNRK22UPUsh6WXC6tYxBTm6KJyFiJ35vX26EVjq8xU87FeyVbmOxVmibwaPpKM2A9DI56TjbxfNCwjRtyVGBYKA00Nt44E8pM
-      - STRIPE_WEBHOOK_SECRET=***REMOVED***51RNRK22UPUsh6WXCmaWOSfckwxWpGNErfigvHxY0kObq0dYmBiUyCyjeQiLmfnK0Jo35GZSTvKynUAPEagXGeCnL00Wajs412m
-      - GOOGLE_CLIENT_ID=***REMOVED***vsru3nn9gauhs1iuvcjkncvasc1t5l0o.apps.googleusercontent.com
-      - GOOGLE_CLIENT_SECRET=***REMOVED***BqYTbads8vKuSel6ij-l1N_7R-_i
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
     entrypoint: ["/app/wait-for-mysql.sh", "java", "-jar", "app.jar"]
 
   mysql:
