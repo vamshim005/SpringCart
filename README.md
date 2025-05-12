@@ -122,3 +122,10 @@ JWT_SECRET_KEY=your_jwt_secret
 ---
 
 For more details, see the code and comments in each service. 
+
+## Changelog
+
+### May 2025
+- Fixed product filtering and sorting logic in backend controller
+- Ensured compatibility with Java 8 by replacing `.toList()` with `.collect(Collectors.toList())`
+- Improved backend/frontend integration for product listing and filtering 

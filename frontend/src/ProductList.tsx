@@ -132,37 +132,47 @@ const ProductList: React.FC<ProductListProps> = ({ role, addToCart }) => {
   };
 
   return (
-    <div>
-      <h2>Product List</h2>
-      {message && <div>{message}</div>}
-      <div style={{ marginBottom: 16 }}>
+    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '24px 0' }}>
+      <h2 style={{ textAlign: 'left', color: '#232f3e', fontWeight: 700, fontSize: '2.1em', marginBottom: 8 }}>Product List</h2>
+      {message && <div style={{ marginBottom: 12, color: '#b12704', fontWeight: 600 }}>{message}</div>}
+      <div style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        gap: 12,
+        background: '#f3f3f3',
+        borderRadius: 10,
+        padding: '18px 18px 10px 18px',
+        marginBottom: 24,
+        boxShadow: '0 1px 4px rgba(0,0,0,0.04)'
+      }}>
         <input
           type="text"
           placeholder="Search by name"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          style={{ marginRight: 8 }}
+          style={{ marginRight: 8, padding: '8px 12px', borderRadius: 6, border: '1px solid #ddd', fontSize: '1em', minWidth: 180 }}
         />
         <input
           type="number"
           placeholder="Min Price"
           value={minPrice}
           onChange={e => setMinPrice(e.target.value)}
-          style={{ marginRight: 8, width: 100 }}
+          style={{ marginRight: 8, padding: '8px 12px', borderRadius: 6, border: '1px solid #ddd', fontSize: '1em', width: 120 }}
         />
         <input
           type="number"
           placeholder="Max Price"
           value={maxPrice}
           onChange={e => setMaxPrice(e.target.value)}
-          style={{ marginRight: 8, width: 100 }}
+          style={{ marginRight: 8, padding: '8px 12px', borderRadius: 6, border: '1px solid #ddd', fontSize: '1em', width: 120 }}
         />
-        <select value={sortBy} onChange={e => setSortBy(e.target.value)} style={{ marginRight: 8 }}>
+        <select value={sortBy} onChange={e => setSortBy(e.target.value)} style={{ marginRight: 8, padding: '8px 12px', borderRadius: 6, border: '1px solid #ddd', fontSize: '1em' }}>
           <option value="id">Sort By</option>
           <option value="price">Price</option>
           <option value="name">Name</option>
         </select>
-        <select value={order} onChange={e => setOrder(e.target.value)}>
+        <select value={order} onChange={e => setOrder(e.target.value)} style={{ padding: '8px 12px', borderRadius: 6, border: '1px solid #ddd', fontSize: '1em' }}>
           <option value="asc">Ascending</option>
           <option value="desc">Descending</option>
         </select>
@@ -177,15 +187,19 @@ const ProductList: React.FC<ProductListProps> = ({ role, addToCart }) => {
             />
             <h3>{p.name}</h3>
             <p>${p.price.toFixed(2)}</p>
-            <span className="stock-badge">{p.stock > 0 ? 'In Stock' : 'Out of Stock'}</span>
+            <span className={`stock-badge${p.stock === 0 ? ' out' : ''}`}>{p.stock > 0 ? 'In Stock' : 'Out of Stock'}</span>
             {addToCart && (
+<<<<<<< HEAD:frontend/src/ProductList.tsx
               <button style={{ marginTop: 8 }} onClick={() => addToCart({ id: p.id, name: p.name, price: p.price, quantity: 1 })}>
+=======
+              <button onClick={() => addToCart({ id: p.id, name: p.name, price: p.price })}>
+>>>>>>> eaf0d4fa7a24ede93833733bcb806c757706a214:client/src/ProductList.tsx
                 Add to Cart
               </button>
             )}
             {role === 'ADMIN' && (
-              <span>
-                <button onClick={() => handleEdit(p)}>Edit</button>
+              <span style={{ marginTop: 8 }}>
+                <button style={{ marginRight: 6 }} onClick={() => handleEdit(p)}>Edit</button>
                 <button onClick={() => handleDelete(p.id)}>Delete</button>
               </span>
             )}
