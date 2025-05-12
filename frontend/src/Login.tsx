@@ -15,6 +15,7 @@ const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
     });
     if (res.ok) {
       const data = await res.json();
+      console.log('Login response:', data);
       localStorage.setItem('jwt', data.token);
       setMessage('Login successful!');
       onLogin();

@@ -27,7 +27,7 @@ const App: React.FC = () => {
     return stored ? JSON.parse(stored) : [];
   });
   const navigate = useNavigate();
-  const isLoggedIn = !!localStorage.getItem('jwt');
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('jwt'));
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -53,13 +53,16 @@ const App: React.FC = () => {
         const decoded = jwtDecode<JwtPayload>(jwt);
         setRole(decoded.role || null);
         setUsername(decoded.username || decoded.sub || null);
+        setIsLoggedIn(true);
       } catch {
         setRole(null);
         setUsername(null);
+        setIsLoggedIn(false);
       }
     } else {
       setRole(null);
       setUsername(null);
+      setIsLoggedIn(false);
     }
     navigate('/products');
   };
@@ -68,6 +71,7 @@ const App: React.FC = () => {
     localStorage.removeItem('jwt');
     setRole(null);
     setUsername(null);
+    setIsLoggedIn(false);
     navigate('/login');
   };
 
