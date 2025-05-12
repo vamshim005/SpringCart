@@ -189,11 +189,7 @@ const ProductList: React.FC<ProductListProps> = ({ role, addToCart }) => {
             <p>${p.price.toFixed(2)}</p>
             <span className={`stock-badge${p.stock === 0 ? ' out' : ''}`}>{p.stock > 0 ? 'In Stock' : 'Out of Stock'}</span>
             {addToCart && (
-<<<<<<< HEAD:frontend/src/ProductList.tsx
               <button style={{ marginTop: 8 }} onClick={() => addToCart({ id: p.id, name: p.name, price: p.price, quantity: 1 })}>
-=======
-              <button onClick={() => addToCart({ id: p.id, name: p.name, price: p.price })}>
->>>>>>> eaf0d4fa7a24ede93833733bcb806c757706a214:client/src/ProductList.tsx
                 Add to Cart
               </button>
             )}
