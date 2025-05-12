@@ -111,7 +111,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: 500, margin: 'auto', padding: 20 }}>
+    <div className="w-full min-h-screen bg-white">
       <nav>
         {!isLoggedIn && <button onClick={() => navigate('/register')}>Register</button>}
         {!isLoggedIn && <button onClick={() => navigate('/login')}>Login</button>}
