@@ -1,0 +1,36 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+
+env:
+  DO_HOST: ${{ secrets.DROPLET_IP }}
+  SSH_USER: ubuntu
+  SSH_KEY: ${{ secrets.SSH_PRIV_KEY }}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build & push images
+        run: |
+          docker build -t yourrepo/ecom-backend:latest backend
+          docker build -t yourrepo/ecom-frontend:latest frontend
+          echo ${{ secrets.DOCKERHUB_PW }} | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin
+          docker push yourrepo/ecom-backend:latest
+          docker push yourrepo/ecom-frontend:latest
+
+      - name: SSH deploy
+        uses: appleboy/ssh-action@v1
+        with:
+          host:   ${{ env.DO_HOST }}
+          username: ${{ env.SSH_USER }}
+          key: ${{ env.SSH_KEY }}
+          script: |
+            cd ecommerceApp
+            git pull
+            docker-compose pull
+            docker-compose up -d --build 
