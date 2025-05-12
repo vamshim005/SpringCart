@@ -19,12 +19,22 @@ const ProductList: React.FC<ProductListProps> = ({ role, addToCart }) => {
   const [message, setMessage] = useState('');
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState({ name: '', description: '', price: '', stock: '', imageUrl: '' });
+  const [search, setSearch] = useState('');
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
+  const [sortBy, setSortBy] = useState('id');
+  const [order, setOrder] = useState('asc');
 
   const fetchProducts = async () => {
     const jwt = localStorage.getItem('jwt');
-    const res = await fetch('http://localhost:8080/api/products', {
-      headers: { 'Authorization': `Bearer ${jwt}` }
-    });
+    const params = new URLSearchParams();
+    if (search) params.append('name', search);
+    if (minPrice) params.append('minPrice', minPrice);
+    if (maxPrice) params.append('maxPrice', maxPrice);
+    if (sortBy) params.append('sortBy', sortBy);
+    if (order) params.append('order', order);
+    const fetchOptions = jwt ? { headers: { 'Authorization': `Bearer ${jwt}` } } : {};
+    const res = await fetch(`http://localhost:8080/api/products?${params.toString()}`, fetchOptions);
     if (res.ok) {
       setProducts(await res.json());
     } else {
@@ -34,7 +44,8 @@ const ProductList: React.FC<ProductListProps> = ({ role, addToCart }) => {
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+    // eslint-disable-next-line
+  }, [search, minPrice, maxPrice, sortBy, order]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -123,6 +134,38 @@ const ProductList: React.FC<ProductListProps> = ({ role, addToCart }) => {
     <div>
       <h2>Product List</h2>
       {message && <div>{message}</div>}
+      <div style={{ marginBottom: 16 }}>
+        <input
+          type="text"
+          placeholder="Search by name"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          style={{ marginRight: 8 }}
+        />
+        <input
+          type="number"
+          placeholder="Min Price"
+          value={minPrice}
+          onChange={e => setMinPrice(e.target.value)}
+          style={{ marginRight: 8, width: 100 }}
+        />
+        <input
+          type="number"
+          placeholder="Max Price"
+          value={maxPrice}
+          onChange={e => setMaxPrice(e.target.value)}
+          style={{ marginRight: 8, width: 100 }}
+        />
+        <select value={sortBy} onChange={e => setSortBy(e.target.value)} style={{ marginRight: 8 }}>
+          <option value="id">Sort By</option>
+          <option value="price">Price</option>
+          <option value="name">Name</option>
+        </select>
+        <select value={order} onChange={e => setOrder(e.target.value)}>
+          <option value="asc">Ascending</option>
+          <option value="desc">Descending</option>
+        </select>
+      </div>
       <div className="product-grid">
         {products.map(p => (
           <div className="product-card" key={p.id}>

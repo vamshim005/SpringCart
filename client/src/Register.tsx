@@ -5,6 +5,7 @@ const Register: React.FC<{ onRegistered: () => void }> = ({ onRegistered }) => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [showLogin, setShowLogin] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,7 +21,13 @@ const Register: React.FC<{ onRegistered: () => void }> = ({ onRegistered }) => {
       onRegistered();
     } else {
       const text = await res.text();
-      setMessage(text);
+      if (text.toLowerCase().includes('exists')) {
+        setMessage('You are already registered. Please log in instead.');
+        setShowLogin(true);
+      } else {
+        setMessage(text);
+        setShowLogin(false);
+      }
     }
   };
 
@@ -31,7 +38,20 @@ const Register: React.FC<{ onRegistered: () => void }> = ({ onRegistered }) => {
       <input placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required />
       <input placeholder="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} required />
       <button type="submit">Register</button>
+      <button
+        type="button"
+        style={{ marginTop: 16, background: '#fff', border: '1px solid #ccc', padding: '8px 16px', borderRadius: 4, cursor: 'pointer' }}
+        onClick={() => window.location.href = 'http://localhost:8080/oauth2/authorization/google'}
+      >
+        <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo" style={{ width: 18, marginRight: 8, verticalAlign: 'middle' }} />
+        Sign up with Google
+      </button>
       <div>{message}</div>
+      {showLogin && (
+        <button type="button" onClick={onRegistered} style={{ marginTop: 8 }}>
+          Go to Login
+        </button>
+      )}
     </form>
   );
 };

@@ -39,6 +39,7 @@ public class SecurityConfig {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
+            .antMatchers("/", "/index.html").permitAll()
             .antMatchers("/api/auth/**").permitAll()
             .antMatchers("/oauth2/**").permitAll()
             .antMatchers("/img/**", "/css/**", "/js/**", "/static/**").permitAll()
