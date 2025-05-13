@@ -52,6 +52,6 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         }
         System.out.println("OAuth2 login success for: " + email);
         String jwt = jwtService.generateToken(user.getUsername(), user.getRole());
-        response.sendRedirect("http://localhost:3000/products?jwt=" + jwt);
+        response.sendRedirect("https://shop.vamshimaya.com/products?jwt=" + jwt);
     }
 }
