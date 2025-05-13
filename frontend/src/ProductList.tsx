@@ -158,22 +158,6 @@ const ProductList: React.FC<ProductListProps> = ({ role, addToCart }) => {
 
   return (
     <div className="w-full px-4 py-6">
-      <nav className="flex justify-center items-center gap-8 border-b pb-3 mb-8 text-sm font-medium">
-        <div className="space-x-6">
-          <a href="/products" className="hover:text-yellow-600 transition-colors">Products</a>
-          <a href="/cart" className="hover:text-yellow-600 transition-colors">
-            Cart ({cartQuantities && Object.values(cartQuantities).reduce((a, b) => a + b, 0)})
-          </a>
-        </div>
-        {role && (
-          <button
-            onClick={() => {/* logout logic */}}
-            className="hover:text-yellow-600 transition-colors"
-          >
-            Logout
-          </button>
-        )}
-      </nav>
       <h2 className="text-3xl font-bold text-gray-900 mb-4">Product List</h2>
       {message && <div className="mb-4 text-red-600 font-semibold">{message}</div>}
       <div className="flex flex-wrap justify-center gap-5 bg-gray-50 border rounded-2xl shadow-sm px-8 py-5 mb-12">

@@ -25,23 +25,23 @@ const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
   };
 
   return (
-    <>
-      <form onSubmit={handleSubmit}>
-        <h2>Login</h2>
-        <input placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} required />
-        <input placeholder="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} required />
-        <button type="submit">Login</button>
-        <div>{message}</div>
+    <div className="flex items-center justify-center min-h-[60vh] bg-gray-50">
+      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md flex flex-col gap-4">
+        <h2 className="text-2xl font-bold text-center mb-4">Login</h2>
+        <input placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} required className="border rounded px-3 py-2" />
+        <input placeholder="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} required className="border rounded px-3 py-2" />
+        <button type="submit" className="bg-orange-500 text-white font-bold py-2 rounded hover:bg-orange-600">Login</button>
+        <button
+          type="button"
+          className="flex items-center justify-center gap-2 border py-2 rounded bg-white hover:bg-gray-100"
+          onClick={() => window.location.href = 'http://localhost:8080/oauth2/authorization/google'}
+        >
+          <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo" className="w-5 h-5" />
+          Sign in with Google
+        </button>
+        <div className="text-center text-red-500">{message}</div>
       </form>
-      <button
-        type="button"
-        style={{ marginTop: 16, background: '#fff', border: '1px solid #ccc', padding: '8px 16px', borderRadius: 4, cursor: 'pointer' }}
-        onClick={() => window.location.href = 'http://localhost:8080/oauth2/authorization/google'}
-      >
-        <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo" style={{ width: 18, marginRight: 8, verticalAlign: 'middle' }} />
-        Sign in with Google
-      </button>
-    </>
+    </div>
   );
 };
 

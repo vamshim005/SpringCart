@@ -112,14 +112,16 @@ const App: React.FC = () => {
 
   return (
     <div className="w-full min-h-screen bg-white">
-      <nav>
-        {!isLoggedIn && <button onClick={() => navigate('/register')}>Register</button>}
-        {!isLoggedIn && <button onClick={() => navigate('/login')}>Login</button>}
-        <button onClick={() => navigate('/products')}>Products</button>
-        <button onClick={() => navigate('/cart')}>Cart ({cart.reduce((sum, item) => sum + item.quantity, 0)})</button>
-        {isLoggedIn && <button onClick={() => navigate('/profile')}>Profile</button>}
-        {isLoggedIn && <button onClick={() => navigate('/checkout')}>Checkout</button>}
-        {isLoggedIn && <button onClick={handleLogout}>Logout</button>}
+      <nav className="w-full bg-gradient-to-r from-[#FF9900] to-[#E24329] py-4 shadow-md">
+        <div className="flex justify-center items-center gap-12">
+          <button onClick={() => navigate('/products')} className="text-white text-lg font-extrabold tracking-wide hover:text-yellow-200 transition-colors focus:outline-none">Products</button>
+          <button onClick={() => navigate('/cart')} className="text-white text-lg font-extrabold tracking-wide hover:text-yellow-200 transition-colors focus:outline-none">Cart ({cart.reduce((sum, item) => sum + item.quantity, 0)})</button>
+          {isLoggedIn && <button onClick={() => navigate('/profile')} className="text-white text-lg font-extrabold tracking-wide hover:text-yellow-200 transition-colors focus:outline-none">Profile</button>}
+          {isLoggedIn && <button onClick={() => navigate('/checkout')} className="text-white text-lg font-extrabold tracking-wide hover:text-yellow-200 transition-colors focus:outline-none">Checkout</button>}
+          {isLoggedIn && <button onClick={handleLogout} className="text-white text-lg font-extrabold tracking-wide hover:text-yellow-200 transition-colors focus:outline-none">Logout</button>}
+          {!isLoggedIn && <button onClick={() => navigate('/login')} className="text-white text-lg font-extrabold tracking-wide hover:text-yellow-200 transition-colors focus:outline-none">Login</button>}
+          {!isLoggedIn && <button onClick={() => navigate('/register')} className="text-white text-lg font-extrabold tracking-wide hover:text-yellow-200 transition-colors focus:outline-none">Register</button>}
+        </div>
       </nav>
       <hr />
       <Routes>
@@ -136,7 +138,7 @@ const App: React.FC = () => {
   );
 };
 
-// Simple Profile component
+// Profile component
 const Profile: React.FC<{ username: string | null }> = ({ username }) => {
   const [user, setUser] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
@@ -147,7 +149,6 @@ const Profile: React.FC<{ username: string | null }> = ({ username }) => {
       return;
     }
     const jwt = localStorage.getItem('jwt');
-    console.log('Fetching profile for username:', username);
     fetch(`http://localhost:8080/api/users/${encodeURIComponent(username)}`, {
       headers: { 'Authorization': `Bearer ${jwt}` }
     })
@@ -156,14 +157,22 @@ const Profile: React.FC<{ username: string | null }> = ({ username }) => {
       .catch(err => setError('Failed to load profile: ' + err));
   }, [username]);
 
-  if (error) return <div>{error}</div>;
-  if (!user) return <div>Loading profile...</div>;
+  if (error) return <div className="text-center text-red-500 mt-8">{error}</div>;
+  if (!user) return <div className="text-center mt-8">Loading profile...</div>;
   return (
-    <div>
-      <h2>Profile</h2>
-      <div><b>Username:</b> {user.username}</div>
-      <div><b>Email:</b> {user.email}</div>
-      <div><b>Role:</b> {user.role}</div>
+    <div className="flex flex-col items-center justify-center min-h-[60vh]">
+      <div className="flex items-center bg-white rounded-xl shadow-lg p-8 mt-8">
+        <img
+          src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user.username)}&background=FF9900&color=fff&rounded=true`}
+          alt="Profile"
+          className="w-24 h-24 rounded-full border-4 border-orange-300 shadow-md mr-8"
+        />
+        <div>
+          <div className="text-2xl font-bold mb-2">{user.username}</div>
+          <div className="text-gray-600 mb-1"><b>Email:</b> {user.email}</div>
+          <div className="text-gray-600"><b>Role:</b> {user.role}</div>
+        </div>
+      </div>
     </div>
   );
 };
@@ -177,27 +186,40 @@ const CartPage: React.FC<{
 }> = ({ cart, removeFromCart, updateCartQuantity, clearCart }) => {
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   return (
-    <div>
-      <h2>Cart</h2>
-      {cart.length === 0 ? <div>Your cart is empty.</div> : (
-        <ul>
-          {cart.map(item => (
-            <li key={item.id}>
-              <b>{item.name}</b> (${item.price}) x
-              <input
-                type="number"
-                min={1}
-                value={item.quantity}
-                onChange={e => updateCartQuantity(item.id, parseInt(e.target.value) || 1)}
-                style={{ width: 40, marginLeft: 4, marginRight: 4 }}
-              />
-              <button onClick={() => removeFromCart(item.id)}>Remove</button>
-            </li>
-          ))}
-        </ul>
-      )}
-      <div><b>Total:</b> ${total.toFixed(2)}</div>
-      {cart.length > 0 && <button onClick={clearCart}>Clear Cart</button>}
+    <div className="flex flex-col items-center min-h-[60vh]">
+      <div className="bg-white rounded-xl shadow-lg p-8 mt-8 w-full max-w-2xl">
+        <h2 className="text-2xl font-bold mb-6">Cart</h2>
+        {cart.length === 0 ? (
+          <div className="text-gray-500">Your cart is empty.</div>
+        ) : (
+          <ul className="divide-y">
+            {cart.map(item => (
+              <li key={item.id} className="flex items-center justify-between py-4">
+                <div>
+                  <span className="font-semibold">{item.name}</span>
+                  <span className="ml-2 text-gray-500">${item.price}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    min={1}
+                    value={item.quantity}
+                    onChange={e => updateCartQuantity(item.id, parseInt(e.target.value) || 1)}
+                    className="w-16 border rounded px-2 py-1"
+                  />
+                  <button onClick={() => removeFromCart(item.id)} className="text-red-500 hover:underline">Remove</button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+        <div className="mt-6 flex justify-between items-center">
+          <span className="font-bold text-lg">Total: ${total.toFixed(2)}</span>
+          {cart.length > 0 && (
+            <button onClick={clearCart} className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">Clear Cart</button>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
