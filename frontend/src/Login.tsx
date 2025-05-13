@@ -8,7 +8,7 @@ const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage('');
-    const res = await fetch('http://localhost:8080/api/auth/login', {
+    const res = await fetch('//api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
@@ -34,7 +34,7 @@ const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
         <button
           type="button"
           className="flex items-center justify-center gap-2 border py-2 rounded bg-white hover:bg-gray-100"
-          onClick={() => window.location.href = 'http://localhost:8080/oauth2/authorization/google'}
+          onClick={() => window.location.href = '/oauth2/authorization/google'}
         >
           <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo" className="w-5 h-5" />
           Sign in with Google
